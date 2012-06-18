@@ -1,4 +1,4 @@
-package jackson
+package json
 
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.core.JsonGenerator.Feature

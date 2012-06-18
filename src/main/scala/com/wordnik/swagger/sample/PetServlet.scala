@@ -1,10 +1,17 @@
 package com.wordnik.swagger.sample
 
+import com.wordnik.swagger.sample.models._
+import com.wordnik.swagger.sample.data._
+import json.JsonUtil
+
 import org.scalatra.ScalatraServlet
 import org.scalatra.swagger._
 
 class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with SwaggerBase with SwaggerSupport {
   protected def buildFullUrl(path: String) = "http://localhost/%s" format path
+
+  val data = new PetData
+  val m = JsonUtil.mapper
 
   get("/:id",
     summary("Find by ID"),
@@ -16,7 +23,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Swa
       Parameter("id", "ID of pet that needs to be fetched",
         DataType.String,
         paramType = ParamType.Path))) {
-      "got a pet!"
+      m.writeValueAsString(data.getPetbyId(params("id").toLong))
     }
 
   post("/",
@@ -28,7 +35,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Swa
       Parameter("body", "Pet object that needs to be added to the store",
         DataType("Pet"),
         paramType = ParamType.Body))) {
-      "added a pet!"
+      m.writeValueAsString(ApiResponse(ApiResponseType.OK, "pet added to store"))
     }
 
   put("/",
@@ -40,7 +47,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Swa
       Parameter("body", "Pet object that needs to be updated in the store",
         DataType("Pet"),
         paramType = ParamType.Body))) {
-      "added a pet!"
+      m.writeValueAsString(ApiResponse(ApiResponseType.OK, "pet updated"))
     }
 
   get("/findByStatus",
@@ -57,9 +64,9 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Swa
         defaultValue = Some("available"),
         allowableValues = AllowableValues.Any))) { // TODO: set allowable values
       val status = params("status")
-        "findByStatus"
+      m.writeValueAsString(data.findPetsByStatus(params("status")))
     }
-  
+
   get("/findByTags",
     summary("Finds Pets by tags"),
     nickname("findByTags"),
@@ -72,6 +79,6 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Swa
         DataType.String,
         paramType = ParamType.Query))) {
       val tags = params("tags")
-        "got a pet!"
+      m.writeValueAsString(data.findPetsByTags(params("tags")))
     }
 }
