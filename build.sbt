@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "org.scalatra" % "scalatra-scalate" % "2.1.0-SNAPSHOT",
   "org.scalatra" % "scalatra-specs2" % "2.1.0-SNAPSHOT" % "test",
   "org.scalatra" % "scalatra-swagger" % "2.1.0-SNAPSHOT",
+  "com.wordnik" %% "swagger-core" % "1.1-SNAPSHOT",
   "ch.qos.logback" % "logback-classic" % "1.0.0" % "runtime",
   "org.eclipse.jetty" % "jetty-server" % "8.1.3.v20120416" % "compile;container;test;runtime",
   "org.eclipse.jetty" % "jetty-servlet" % "8.1.3.v20120416" % "compile;container;test;runtime",

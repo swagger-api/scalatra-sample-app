@@ -3,15 +3,29 @@ package com.wordnik.swagger.sample
 import com.wordnik.swagger.sample.models._
 import com.wordnik.swagger.sample.data._
 import json.JsonUtil
+import com.wordnik.swagger.core.ApiPropertiesReader
 
 import org.scalatra.ScalatraServlet
 import org.scalatra.swagger._
+
+import scala.collection.JavaConverters._
 
 class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with SwaggerBase with SwaggerSupport {
   protected def buildFullUrl(path: String) = "http://localhost/%s" format path
 
   val data = new PetData
   val m = JsonUtil.mapper
+
+  def swaggerToModel(cls: Class[_]) = {
+    var docObj = ApiPropertiesReader.read(cls)
+    val name = docObj.getName
+    val fields = for (field <- docObj.getFields.asScala.filter(d => d.paramType != null))
+      yield (field.name -> ModelField(field.name, field.notes, DataType(field.paramType)))
+
+    Model(name, name, fields.toMap)
+  }
+
+  models = Map(swaggerToModel(classOf[Pet]))
 
   get("/:id",
     summary("Find by ID"),
