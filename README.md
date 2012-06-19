@@ -4,7 +4,7 @@
 
 2. Run Jetty
 
-        container:start
+        run
 
 3. Go to http://localhost:8080/api/resources.json.
 
