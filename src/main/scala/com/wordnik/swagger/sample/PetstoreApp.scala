@@ -17,7 +17,7 @@ class ResourcesApp(implicit val swagger: Swagger) extends ScalatraServlet with J
   }
 
   protected def buildFullUrl(path: String) = if (path.startsWith("http")) path else {
-    "http://%s:%s/%s/%s".format(
+    "http://%s:%s%s/%s".format(
       request.getServerName,
       request.getServerPort,
       request.getContextPath,

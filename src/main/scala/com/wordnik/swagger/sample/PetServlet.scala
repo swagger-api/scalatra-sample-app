@@ -13,6 +13,7 @@ import org.json4s.{DefaultFormats, Formats}
 
 class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with TypedParamSupport with JacksonJsonSupport with JValueResult with SwaggerSupport {
 
+  protected val applicationDescription = "The pets api"
   protected implicit val jsonFormats: Formats = DefaultFormats
 
   val data = new PetData
@@ -27,11 +28,20 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Typ
   }
 
   models = Map(swaggerToModel(classOf[Pet]))
+  
 
   before() {
     contentType = formats("json")
   }
 
+  get("/",
+      summary("Show all pets"),
+      nickname("allPets"),
+      responseClass("Pet"),
+      endpoint(""),
+      notes("shows all the pets in the data store")) {
+    data.pets
+  }
   get("/:id",
     summary("Find by ID"),
     nickname("findById"),

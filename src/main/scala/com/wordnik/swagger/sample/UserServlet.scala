@@ -8,6 +8,7 @@ import org.scalatra.json.JacksonJsonSupport
 class UserServlet(implicit val swagger: Swagger) extends ScalatraServlet with JacksonJsonSupport with SwaggerSupport {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
+  protected val applicationDescription = "Users API"
 
   get("/:id", summary("Find by ID"), nickname("findById"), responseClass("Book"), endpoint("{id}"), parameters(
     Parameter("id", "ID", DataType.String, paramType = ParamType.Path))) {
