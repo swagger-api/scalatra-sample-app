@@ -14,6 +14,7 @@ import org.json4s.{DefaultFormats, Formats}
 class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with TypedParamSupport with JacksonJsonSupport with JValueResult with SwaggerSupport {
 
   protected val applicationDescription = "The pets api"
+  override protected val applicationName = Some("pet")
   protected implicit val jsonFormats: Formats = DefaultFormats
 
   val data = new PetData
