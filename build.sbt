@@ -10,6 +10,8 @@ scalaVersion := "2.9.2"
 
 seq(webSettings :_*)
 
+classpathTypes ~= (_ + "orbit")
+
 libraryDependencies ++= Seq(
   "org.scalatra"                 % "scalatra"               % "2.2.0-SNAPSHOT",
   "org.scalatra"                 % "scalatra-scalate"       % "2.2.0-SNAPSHOT",
