@@ -12,28 +12,14 @@ import scala.collection.JavaConverters._
 import org.json4s.{DefaultFormats, Formats}
 
 class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with TypedParamSupport with JacksonJsonSupport with JValueResult with SwaggerSupport {
-
+  import org.json4s.JsonDSL._
   protected val applicationDescription = "The pets api"
   override protected val applicationName = Some("pet")
   protected implicit val jsonFormats: Formats = DefaultFormats
 
   val data = new PetData
 
-  def swaggerToModel(cls: Class[_]) = {
-    val docObj = ApiPropertiesReader.read(cls)
-    val name = docObj.getName
-    val fields = for (field <- docObj.getFields.asScala.filter(d => d.paramType != null))
-      yield (field.name -> ModelField(field.name, field.notes, DataType(field.paramType)))
-
-    Model(name, name, fields.toMap)
-  }
-
-  models = Map(swaggerToModel(classOf[Pet]))
-  
-
-  before() {
-    contentType = formats("json")
-  }
+  models = Map(classOf[Pet])
 
   get("/",
       summary("Show all pets"),
@@ -43,6 +29,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Typ
       notes("shows all the pets in the data store")) {
     data.pets
   }
+
   get("/:id",
     summary("Find by ID"),
     nickname("findById"),
@@ -63,7 +50,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Typ
     endpoint(""), // TODO shouldn't this be from the first param?  also missing the .{format}
     parameters(
       Parameter("body", "Pet object that needs to be added to the store",
-        DataType("Pet"),
+        DataType[Pet],
         paramType = ParamType.Body))) {
       ApiResponse(ApiResponseType.OK, "pet added to store")
     }
@@ -75,7 +62,7 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Typ
     endpoint(""),
     parameters(
       Parameter("body", "Pet object that needs to be updated in the store",
-        DataType("Pet"),
+        DataType[Pet],
         paramType = ParamType.Body))) {
       ApiResponse(ApiResponseType.OK, "pet updated")
     }
@@ -92,14 +79,14 @@ class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with Typ
         DataType.String,
         paramType = ParamType.Query,
         defaultValue = Some("available"),
-        allowableValues = AllowableValues.Any))) { // TODO: set allowable values
+        allowableValues = AllowableValues("available", "unavailable", "none")))) { // TODO: set allowable values
       data.findPetsByStatus(params("status"))
     }
 
   get("/findByTags",
     summary("Finds Pets by tags"),
     nickname("findByTags"),
-    responseClass("Pet"), // TODO: missing multi-valued response?
+    responseClass[Pet], // TODO: missing multi-valued response?
     endpoint("findByTags"),
     notes("Muliple tags can be provided with comma seperated strings. Use tag1, tag2, tag3 for testing."),
     parameters(
