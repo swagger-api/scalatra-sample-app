@@ -11,7 +11,7 @@ import org.scalatra.json._
 import scala.collection.JavaConverters._
 import org.json4s.{DefaultFormats, Formats}
 
-class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with TypedParamSupport with JacksonJsonSupport with JValueResult with SwaggerSupport {
+class PetServlet(implicit val swagger: Swagger) extends ScalatraServlet with JacksonJsonSupport with JValueResult with SwaggerSupport {
   import org.json4s.JsonDSL._
   protected val applicationDescription = "The pets api"
   override protected val applicationName = Some("pet")
